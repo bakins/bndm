@@ -9,7 +9,7 @@ type Pattern struct {
 	pattern_len int
 }
 
-func Compile(input string) *Pattern {
+func Compile(input []byte) *Pattern {
 	t := &Pattern{}
 	length := len(input)
 	t.pattern_len = length
@@ -24,7 +24,7 @@ func Compile(input string) *Pattern {
 	return t
 }
 
-func (t *Pattern) Search(subject string) int {
+func (t *Pattern) Search(subject []byte) int {
 	hl := len(subject)
 	nl := t.pattern_len
 	x := t.x
