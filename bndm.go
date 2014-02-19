@@ -1,5 +1,6 @@
 // Package bdnm implements the Backward Nondeterministic Dawg Matching algorithm
 // currently only works on strings
+// This implemntation is based on the one in Apache HTTPD mod_include
 package bndm
 
 type Pattern struct {
