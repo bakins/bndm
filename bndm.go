@@ -1,3 +1,5 @@
+// Package bdnm implements the Backward Nondeterministic Dawg Matching algorithm
+// currently only works on strings
 package bndm
 
 type Pattern struct {
