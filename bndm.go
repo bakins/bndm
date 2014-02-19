@@ -1,14 +1,16 @@
-// Package bdnm implements the Backward Nondeterministic Dawg Matching algorithm
-// currently only works on strings
+// Package bdnm implements the Backward Nondeterministic Dawg Matching algorithm.
+// Currently only tested on strings.
 // This implemntation is based on the one in Apache HTTPD mod_include
 package bndm
 
+// Pattern is an opaque struct that represents a compiled bndm pattern
 type Pattern struct {
 	t           [256]uint
 	x           uint
 	pattern_len int
 }
 
+// Compile sets up a bndm pattern
 func Compile(input []byte) *Pattern {
 	t := &Pattern{}
 	length := len(input)
@@ -24,6 +26,8 @@ func Compile(input []byte) *Pattern {
 	return t
 }
 
+// Search in a string for the pattern given to Compile. returns the index of the first instance of patter in subject,
+// or -1 if it is not found
 func (t *Pattern) Search(subject []byte) int {
 	hl := len(subject)
 	nl := t.pattern_len
