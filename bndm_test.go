@@ -1,6 +1,9 @@
 package bndm
 
 import (
+	"bytes"
+	"crypto/rand"
+	"fmt"
 	"strings"
 	"testing"
 )
@@ -37,29 +40,66 @@ func BenchmarkCompile(b *testing.B) {
 	}
 }
 
-func BenchmarkSearch(b *testing.B) {
+func BenchmarkSearchWithShortSubject(b *testing.B) {
 	p := Compile([]byte("needle"))
-	if p == nil {
-		b.Error("Compile failed")
-	}
 	subject := "haystackneedlehaystack"
-
 	for i := 0; i < b.N; i++ {
-		index := p.Search([]byte(subject))
-
-		if index != 8 {
-			b.Error("Search failed: index: ", index)
-		}
+		p.Search([]byte(subject))
 	}
 }
 
-func BenchmarkIndex(b *testing.B) {
+func BenchmarkIndexWithShortSubject(b *testing.B) {
 	subject := "haystackneedlehaystack"
-
 	for i := 0; i < b.N; i++ {
-		index := strings.Index(subject, "needle")
-		if index != 8 {
-			b.Error("Search failed: index: ", index)
-		}
+		strings.Index(subject, "needle")
+	}
+}
+
+// http://stackoverflow.com/a/12772666
+func randString(n int) string {
+	const alphanum = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+	var bytes = make([]byte, n)
+	rand.Read(bytes)
+	for i, b := range bytes {
+		bytes[i] = alphanum[b%byte(len(alphanum))]
+	}
+	return string(bytes)
+}
+
+func BenchmarkSearchWithRandomSubject(b *testing.B) {
+	p := Compile([]byte("needle"))
+	subject := randString(16384)
+	for i := 0; i < b.N; i++ {
+		p.Search([]byte(subject))
+	}
+}
+
+func BenchmarkIndexWithRandomSubject(b *testing.B) {
+	subject := randString(16384)
+	for i := 0; i < b.N; i++ {
+		strings.Index(subject, "needle")
+	}
+}
+
+func longSubject(n int, haystack string, needle string) string {
+	var buffer bytes.Buffer
+	for i := 0; i < n; i++ {
+		buffer.WriteString(haystack)
+	}
+	return fmt.Sprint(buffer.String())
+}
+
+func BenchmarkSearchWithLongSubject(b *testing.B) {
+	p := Compile([]byte("needle"))
+	subject := longSubject(4092, "haystack", "needle")
+	for i := 0; i < b.N; i++ {
+		p.Search([]byte(subject))
+	}
+}
+
+func BenchmarkIndexWithLongSubject(b *testing.B) {
+	subject := longSubject(4092, "haystack", "needle")
+	for i := 0; i < b.N; i++ {
+		strings.Index(subject, "needle")
 	}
 }
